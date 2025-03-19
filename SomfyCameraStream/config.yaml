@@ -13,8 +13,9 @@ arch:
 init: false
 map:
   - share:rw
+  - config:rw
 options:
   rtmps_url: "rtmps://stream"
 schema:
   rtmps_url: "str"
-image: "ghcr.io/home-assistant/{arch}-addon-SomfyCameraStream"
+#image: "ghcr.io/home-assistant/{arch}-addon-SomfyCameraStream"
