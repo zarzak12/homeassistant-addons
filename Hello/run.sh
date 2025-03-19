@@ -6,7 +6,14 @@ RTMPS_URL_OUT=$(jq --raw-output '.rtmps_url_output' /data/options.json)
 
 echo "Démarrage du flux RTMPS -> HTTP : $RTMPS_URL"
 
-# Convertir RTMPS en HTTP avec FFmpeg
-ffmpeg -i "$RTMPS_URL" -c:v copy -f mjpeg $RTMPS_URL_OUT
+# Vérifier si l'URL est bien définie
+if [ -z "$RTMPS_URL" ]; then
+    echo "Erreur : L'URL RTMPS n'est pas définie"
+    exit 1
+fi
 
-echo "HTTP : $RTMPS_URL_OUT"
+# Lancer FFmpeg avec des paramètres plus stables
+ffmpeg -re -i "$RTMPS_URL" -an -vf "format=yuvj422p" -f mjpeg "$RTMPS_URL_OUT" &
+
+# Afficher l'URL de sortie
+echo "HTTP disponible à : $RTMPS_URL_OUT"
