@@ -23,7 +23,7 @@ if netstat -tulnp | grep ":8070"; then
 fi
 
 # Lancer FFmpeg et rediriger les logs vers stdout pour Home Assistant
-ffmpeg -re -i "$RTMPS_URL" \
+ffmpeg -re -loglevel debug -i "$RTMPS_URL" \
     -an -vf "format=yuvj422p" \
     -f mjpeg "http://0.0.0.0:8070/feed.mjpeg" 2>&1 | tee /dev/stdout
 
