@@ -9,3 +9,7 @@ arch:
   - armhf
   - armv7
   - i386
+options:
+  rtmps_url: "rtmps://stream"
+schema:
+  rtmps_url: "str"
