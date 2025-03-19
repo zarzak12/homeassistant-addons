@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: SomfyCameraStream
-version: "1.2.0"
+version: "1.0.0"
 slug: SomfyCameraStream
 description: Un module permettant d'afficher un flux RTMPS dans Home Assistant.
 url: "https://github.com/zarzak12/homeassistant-addons/tree/main/SomfyCameraStream"
