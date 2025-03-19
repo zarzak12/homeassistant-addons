@@ -13,8 +13,8 @@ arch:
   - armv7
   - i386
 options:
-  rtmps_url_input: "rtmps://stream"
-  rtmps_url_output: "http://127.0.0.1:8070"
+  rtmps_url_input: "rtmps:\/\/ip-10-21-1-178.myfox.io\/live\/livecamera-YjU5MGZkNGY1YWVkNmRkYzEwMzJiOGY5OGI4ODE2MjUzMzM1YWM4NjczMzjQyMDQwMmExNzUyZGI1Nwx3ZS7P0wwUFjOZ2gXtFyqdUWO8u3LkHK"
+  rtmps_url_output: "http://0.0.0.0:8070"
 schema:
   rtmps_url_input: "str"
   rtmps_url_output: "str"
