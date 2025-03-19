@@ -1,11 +1,12 @@
 #!/bin/sh
 
 # Lire l'URL RTMPS depuis la config
-RTMPS_URL=$(jq --raw-output '.rtmps_url' /data/options.json)
+RTMPS_URL=$(jq --raw-output '.rtmps_url_input' /data/options.json)
+RTMPS_URL_OUT=$(jq --raw-output '.rtmps_url_output' /data/options.json)
 
 echo "Démarrage du flux RTMPS -> HTTP : $RTMPS_URL"
 
 # Convertir RTMPS en HTTP avec FFmpeg
-ffmpeg -i "$RTMPS_URL" -c:v copy -f mjpeg http://0.0.0.0:7070/feed.mjpeg
+ffmpeg -i "$RTMPS_URL" -c:v copy -f mjpeg $RTMPS_URL_OUT
 
-echo "HTTP : http://0.0.0.0:7070/feed.mjpeg"
+echo "HTTP : $RTMPS_URL_OUT"
