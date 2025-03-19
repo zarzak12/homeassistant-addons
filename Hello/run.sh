@@ -7,7 +7,7 @@ RTMPS_URL_OUT=$(jq --raw-output '.rtmps_url_output' /data/options.json)
 echo "Input : $RTMPS_URL"
 
 # Nettoyer l'URL RTMPS pour enlever les caractères d'échappement
-RTMPS_URL=$(echo "$RAW_RTMPS_URL" | sed 's|\\||g')
+RTMPS_URL=$(echo "$RTMPS_URL" | sed 's|\\||g')
 
 echo "Démarrage du flux RTMPS -> HTTP : $RTMPS_URL"
 

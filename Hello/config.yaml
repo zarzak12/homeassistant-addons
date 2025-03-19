@@ -3,7 +3,6 @@ description: "My first real add-on!"
 version: "1.0.0"
 slug: "hello_world"
 init: false
-host_network: true
 ports:
   "8070/tcp": 8070
 arch:
