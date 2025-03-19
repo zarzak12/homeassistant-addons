@@ -12,8 +12,12 @@ if [ -z "$RTMPS_URL" ]; then
     exit 1
 fi
 
-# Lancer FFmpeg avec des paramètres plus stables
-ffmpeg -re -i "$RTMPS_URL" -an -vf "format=yuvj422p" -f mjpeg "$RTMPS_URL_OUT" &
+# Lancer FFmpeg en arrière-plan
+ffmpeg -re -i "$RTMPS_URL" \
+    -an -vf "format=yuvj422p" \
+    -f mjpeg "$RTMPS_URL_OUT" > /dev/null 2>&1 &
 
-# Afficher l'URL de sortie
 echo "HTTP disponible à : $RTMPS_URL_OUT"
+
+# Empêcher le conteneur de se fermer immédiatement
+exec tail -f /dev/null
