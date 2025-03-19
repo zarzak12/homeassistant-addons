@@ -1,5 +1,4 @@
----
 # https://developers.home-assistant.io/docs/add-ons/repository#repository-configuration
-name: Zarzak Home Assistant add-on repository
-url: "https://github.com/zarzak12/homeassistant-addons"
-maintainer: Zarzak
+name: Example Home Assistant add-on repository
+url: 'https://github.com/home-assistant/addons-example'
+maintainer: Awesome Maintainer <awesome@example.com>
