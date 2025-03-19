@@ -25,7 +25,7 @@ fi
 # Lancer FFmpeg et rediriger les logs vers stdout pour Home Assistant
 ffmpeg -re -loglevel debug -i "$RTMPS_URL" \
     -an -vf "format=yuvj422p" \
-    -f mjpeg "http://0.0.0.0:8070/feed.mjpeg" 2>&1 | tee /dev/stdout
+    -f mjpeg "http://0.0.0.0:8070" 2>&1 | tee /dev/stdout
 
 echo "HTTP disponible à : $RTMPS_URL_OUT"
 
