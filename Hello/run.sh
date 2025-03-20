@@ -1,5 +1,31 @@
 #!/bin/sh
 
+client_id=$(echo "ODRlZGRmNDgtMmI4ZS0xMWU1LWIyYTUtMTI0Y2ZhYjI1NTk1XzQ3NWJ1cXJmOHY4a2d3b280Z293MDhna2tjMGNrODA0ODh3bzQ0czhvNDhzZzg0azQw" | base64 --decode)
+client_secret=$(echo "NGRzcWZudGlldTB3Y2t3d280MGt3ODQ4Z3c0bzBjOGs0b3djODBrNGdvMGNzMGs4NDQ=" | base64 --decode)
+
+# Charger les paramètres de configuration
+oauth_url="https://sso.myfox.io/oauth/oauth/v2/token"
+username="$(jq -r .somfy_protect.username /data/options.json)"
+password="$(jq -r .somfy_protect.password /data/options.json)"
+
+# Obtenir un access_token
+echo "Obtenion du token OAuth2..."
+response=$(curl -s -X POST "$oauth_url" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "grant_type=password" \
+    -d "client_id=$client_id" \
+    -d "client_secret=$client_secret" \
+    -d "username=$username" \
+    -d "password=$password")
+
+token=$(echo "$response" | jq -r .access_token)
+if [ "$token" == "null" ] || [ -z "$token" ]; then
+    echo "Échec de l'authentification. Vérifiez vos identifiants."
+    exit 1
+fi
+
+echo "Token obtenu avec succès."
+
 # Lire les paramètres depuis Home Assistant
 RTMPS_URL=$(jq --raw-output '.rtmps_url_input' /data/options.json)
 RTMPS_URL_OUT=$(jq --raw-output '.rtmps_url_output' /data/options.json)
