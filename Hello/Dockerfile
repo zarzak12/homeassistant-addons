@@ -2,7 +2,7 @@ ARG BUILD_FROM
 FROM $BUILD_FROM
 
 # Installer les dépendances
-RUN apk add --no-cache nginx nginx-mod-rtmp ffmpeg jq net-tools
+RUN apk add --no-cache nginx nginx-rtmp nginx-mod-rtmp ffmpeg jq net-tools
 
 # Copy data for add-on
 COPY nginx.conf /etc/nginx/nginx.conf
