@@ -21,19 +21,18 @@ RUN apk update && apk add --no-cache ffmpeg nginx jq python3 py3-pip \
    opus \
    opus-dev \
    py3-opencv \
-   python3 \
    python3-dev \
    yq
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Download source and untar
-WORKDIR /usr/bin
-ADD "https://github.com/zarzak12/SomfyCameraStream/archive/refs/tags/${VERSION}.tar.gz" ${VERSION}.tar.gz
-RUN tar -xvf ${VERSION}.tar.gz && mv /usr/bin/SomfyCameraStream-${VERSION} /usr/bin/SomfyCameraStream
+#WORKDIR /usr/bin
+#ADD "https://github.com/zarzak12/SomfyCameraStream/archive/refs/tags/${VERSION}.tar.gz" ${VERSION}.tar.gz
+#RUN tar -xvf ${VERSION}.tar.gz && mv /usr/bin/SomfyCameraStream-${VERSION} /usr/bin/SomfyCameraStream
 
 # Install python3 requirements
-WORKDIR /usr/bin/SomfyCameraStream
+#WORKDIR /usr/bin/SomfyCameraStream
 #RUN pip3 install --no-cache-dir -r requirements/addon.txt
 
 # Exposer les ports HTTP pour HLS
