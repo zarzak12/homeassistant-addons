@@ -46,6 +46,23 @@ websocat "$WS_URL" | while read -r message; do
     fi
 done &  # ⬅️ WebSocket tourne en arrière-plan
 
+# 🕐 Pause pour s'assurer que le WebSocket est bien établi
+sleep 2
+
+# 📡 Demander le démarrage du flux vidéo via l'API
+SITE_ID="itsYi0aEPEeS5EH6X1BESVQFGDWkfT6T"
+DEVICE_ID="x3ZS7P0wwUFjOZ2gXtFyqdUWO8u3LkHK"
+STREAM_URL="https://api.myfox.io/v3/site/$SITE_ID/device/$DEVICE_ID/action"
+
+echo "📡 Demande de démarrage du flux vidéo..."
+response=$(curl -s -X POST "$STREAM_URL" \
+    -H "Authorization: Bearer $token" \
+    -H "Content-Type: application/json" \
+    -d '{"action": "stream_start"}')
+
+echo "📡 Réponse de l'API : $response"
+
+
 # 🚀 Attendre l'arrivée du flux vidéo
 while [ ! -s /tmp/rtmps_url ]; do
     echo "⌛ En attente d'un flux RTMPS..."
