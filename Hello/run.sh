@@ -22,12 +22,20 @@ if netstat -tulnp | grep ":8070"; then
     echo "Attention : Le port 8070 est déjà utilisé, vérifiez qu'il est bien libre."
 fi
 
-# Lancer FFmpeg et rediriger les logs vers stdout pour Home Assistant
-ffmpeg -re -loglevel debug -i "$RTMPS_URL" \
-    -an -vf "format=yuvj422p" \
-    -f mjpeg "$RTMPS_URL_OUT.feed.mjpeg" 2>&1 | tee /dev/stdout
 
-mjpg_streamer -i "input_file.so -f /tmp -n feed.mjpeg" -o "output_http.so -w /usr/share/mjpg-streamer/www -p 8070" &
+# Arrêter l'ancienne conversion si nécessaire
+pkill -f "ffmpeg"
+
+# Lancer la conversion RTMPS → RTSP avec FFmpeg
+ffmpeg -re -loglevel debug -i "$RTMPS_URL" -c:v copy -c:a copy -f rtsp "$RTMPS_URL_OUT" &
+
+# Lancer FFmpeg et rediriger les logs vers stdout pour Home Assistant
+
+#ffmpeg -re -loglevel debug -i "$RTMPS_URL" \
+#    -an -vf "format=yuvj422p" \
+#    -f mjpeg "$RTMPS_URL_OUT.feed.mjpeg" 2>&1 | tee /dev/stdout
+
+#mjpg_streamer -i "input_file.so -f /tmp -n feed.mjpeg" -o "output_http.so -w /usr/share/mjpg-streamer/www -p 8070" &
 
 
 echo "HTTP disponible à : $RTMPS_URL_OUT.feed.mjpeg"
