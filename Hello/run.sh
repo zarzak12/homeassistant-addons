@@ -8,11 +8,6 @@ oauth_url="https://sso.myfox.io/oauth/oauth/v2/token"
 username="$(jq -r .somfy_protect.username /data/options.json)"
 password="$(jq -r .somfy_protect.password /data/options.json)"
 
-echo "Client ID: $client_id"
-echo "Client Secret: $client_secret"
-echo "Username: $username"
-echo "Password: $password"
-
 # Obtenir un access_token
 echo "Obtenion du token OAuth2..."
 response=$(curl -s -X POST "$oauth_url" \
@@ -30,6 +25,20 @@ if [ "$token" == "null" ] || [ -z "$token" ]; then
 fi
 
 echo "Token obtenu avec succès."
+
+# Vérifier que le token est bien obtenu
+if [ -z "$token" ]; then
+    echo "❌ Erreur : Token OAuth2 introuvable."
+    exit 1
+fi
+
+# URL du WebSocket
+WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
+
+echo "🔌 Connexion à $WS_URL ..."
+
+# Connexion WebSocket avec websocat
+websocat "$WS_URL"
 
 # Lire les paramètres depuis Home Assistant
 RTMPS_URL=$(jq --raw-output '.rtmps_url_input' /data/options.json)
