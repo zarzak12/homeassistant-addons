@@ -6,6 +6,7 @@ RUN apk add --no-cache ffmpeg nginx jq python3 py3-pip
 
 # Copier les fichiers nécessaires
 COPY run.sh /run.sh
+COPY websocket_listener.py srcipts/websocket_listener.py
 COPY nginx.conf /etc/nginx/nginx.conf
 RUN chmod a+x /run.sh
 

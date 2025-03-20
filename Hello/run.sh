@@ -67,7 +67,7 @@ WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
 echo "🔌 Connexion au WebSocket..."
 
 echo "🔌 Lancement du WebSocket en Python..."
-python3 /websocket_listener.py &  # Le '&' lance le script en arrière-plan
+python3 srcipts/websocket_listener.py &  # Le '&' lance le script en arrière-plan
 
 echo "✅ WebSocket lancé en arrière-plan"
 
