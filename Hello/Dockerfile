@@ -1,11 +1,14 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-# Installer les dépendances
-RUN apk add --no-cache nginx nginx-rtmp nginx-mod-rtmp ffmpeg jq net-tools
+# Installer les outils nécessaires
+RUN apk add --no-cache alpine-sdk pcre-dev zlib-dev openssl-dev ffmpeg jq net-tools
 
-RUN apk add --no-cache alpine-sdk pcre-dev zlib-dev openssl-dev \
-    && wget http://nginx.org/download/nginx-1.22.1.tar.gz \
+# Désinstaller la version existante de nginx
+RUN apk del nginx nginx-rtmp nginx-mod-rtmp || true
+
+# Télécharger et compiler NGINX avec RTMP
+RUN wget http://nginx.org/download/nginx-1.22.1.tar.gz \
     && tar -zxvf nginx-1.22.1.tar.gz \
     && git clone https://github.com/arut/nginx-rtmp-module.git \
     && cd nginx-1.22.1 \
