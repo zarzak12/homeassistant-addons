@@ -27,6 +27,25 @@ fi
 
 echo "✅ Token obtenu avec succès."
 
+# 🔄 Récupération du site depuis la configuration
+site_name="$(jq -r .somfy_protect.site /data/options.json)"
+
+# 📡 Appel API pour récupérer la liste des sites
+echo "🔍 Recherche du site_id pour le site : $site_name"
+sites_response=$(curl -s -X GET "https://api.myfox.io/v3/site" \
+    -H "Authorization: Bearer $token")
+
+# 🛠 Extraction du site_id correspondant au site_name
+site_id=$(echo "$sites_response" | jq -r --arg site "$site_name" '.items[] | select(.name == $site) | .site_id')
+
+# 🛑 Vérification
+if [ -z "$site_id" ] || [ "$site_id" == "null" ]; then
+    echo "❌ Erreur : Aucun site_id trouvé pour le site \"$site_name\"."
+    exit 1
+fi
+
+echo "✅ Site ID trouvé : $site_id"
+
 # 🌐 URL du WebSocket
 #WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
 WS_URL="wss://websocket.myfox.io/events/websocket?token=YzEzNjUzZjkxODU3MTE1ODI5ZThjOTliYzA4MzRmODY1NDAyZWZiMjhhZTY0YjgwMWI2ZWM1YTFlM2FmOWMwMA"
