@@ -1,27 +1,16 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-# Installer les outils nécessaires
-RUN apk add --no-cache alpine-sdk pcre-dev zlib-dev openssl-dev ffmpeg jq net-tools
+# Installer les dépendances
+RUN apk add --no-cache ffmpeg nginx jq
 
-# Désinstaller la version existante de nginx
-RUN apk del nginx nginx-rtmp nginx-mod-rtmp || true
-
-# Télécharger et compiler NGINX avec RTMP
-RUN wget http://nginx.org/download/nginx-1.22.1.tar.gz \
-    && tar -zxvf nginx-1.22.1.tar.gz \
-    && git clone https://github.com/arut/nginx-rtmp-module.git \
-    && cd nginx-1.22.1 \
-    && ./configure --add-module=../nginx-rtmp-module --with-http_ssl_module \
-    && make \
-    && make install
-
-# Copy data for add-on
+# Copier les fichiers nécessaires
+COPY run.sh /run.sh
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY run.sh /
 RUN chmod a+x /run.sh
 
-# Exposer les ports RTMP et HTTP
-EXPOSE 1935 8070
+# Exposer les ports HTTP pour HLS
+EXPOSE 7080
 
+# Lancer le script au démarrage
 CMD [ "/run.sh" ]

@@ -18,8 +18,8 @@ if [ -z "$RTMPS_URL" ]; then
 fi
 
 # Vérifier si le port 8070 est libre
-if netstat -tulnp | grep ":8070"; then
-    echo "Attention : Le port 8070 est déjà utilisé, vérifiez qu'il est bien libre."
+if netstat -tulnp | grep ":7080"; then
+    echo "Attention : Le port 7080 est déjà utilisé, vérifiez qu'il est bien libre."
 fi
 
 # Vérifier que NGINX RTMP fonctionne
@@ -29,21 +29,28 @@ nginx
 # Arrêter les anciens processus FFmpeg
 pkill -f "ffmpeg"
 
-# Conversion RTMPS -> RTMP (via NGINX) -> MJPEG
-echo "Lancement du transcodage avec FFmpeg..."
-ffmpeg -re -loglevel debug -i "$RTMPS_URL" \
-    -c:v copy -c:a copy -f flv "$RTMPS_URL_OUT" &
+echo "RTMPS Input: $RTMPS_URL"
+echo "HLS Output Path: $HLS_PATH"
 
-# Lancer FFmpeg et rediriger les logs vers stdout pour Home Assistant
+# Vérifier si l'URL RTMPS est bien définie
+if [ -z "$RTMPS_URL" ]; then
+    echo "Erreur : L'URL RTMPS n'est pas définie"
+    exit 1
+fi
 
-#ffmpeg -re -loglevel debug -i "$RTMPS_URL" \
-#    -an -vf "format=yuvj422p" \
-#    -f mjpeg "$RTMPS_URL_OUT.feed.mjpeg" 2>&1 | tee /dev/stdout
+# Nettoyer l'ancienne session
+rm -rf "$HLS_PATH"
+mkdir -p "$HLS_PATH"
 
-#mjpg_streamer -i "input_file.so -f /tmp -n feed.mjpeg" -o "output_http.so -w /usr/share/mjpg-streamer/www -p 8070" &
+# Lancer la conversion avec FFmpeg
+ffmpeg -re -i "$RTMPS_URL" \
+    -c:v copy -c:a aac -b:a 128k -f hls \
+    -hls_time 5 -hls_list_size 10 -hls_flags delete_segments \
+    -hls_segment_filename "$HLS_PATH/segment_%03d.ts" \
+    "$HLS_PATH/index.m3u8" &
 
-
-echo "HTTP disponible à : $RTMPS_URL_OUT.feed.mjpeg"
+# Démarrer Nginx pour servir les fichiers HLS
+nginx -g "daemon off;"
 
 # Empêcher le conteneur de se fermer
 exec tail -f /dev/null
