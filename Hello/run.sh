@@ -3,6 +3,7 @@
 # Lire les paramètres depuis Home Assistant
 RTMPS_URL=$(jq --raw-output '.rtmps_url_input' /data/options.json)
 RTMPS_URL_OUT=$(jq --raw-output '.rtmps_url_output' /data/options.json)
+HLS_PATH="/www/hls"
 
 echo "Input : $RTMPS_URL"
 
