@@ -27,7 +27,7 @@ fi
 pkill -f "ffmpeg"
 
 # Lancer la conversion RTMPS → RTSP avec FFmpeg
-ffmpeg -re -loglevel debug -i "$RTMPS_URL" -c:v copy -c:a copy -f rtsp "$RTMPS_URL_OUT" &
+ffmpeg -re -loglevel debug -rtmp_live live -i "$RTMPS_URL" -c:v copy -c:a copy -f rtsp "$RTMPS_URL_OUT" &
 
 # Lancer FFmpeg et rediriger les logs vers stdout pour Home Assistant
 
