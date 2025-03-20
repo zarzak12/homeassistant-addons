@@ -22,12 +22,17 @@ if netstat -tulnp | grep ":8070"; then
     echo "Attention : Le port 8070 est déjà utilisé, vérifiez qu'il est bien libre."
 fi
 
+# Vérifier que NGINX RTMP fonctionne
+echo "Démarrage du serveur RTMP..."
+nginx
 
-# Arrêter l'ancienne conversion si nécessaire
+# Arrêter les anciens processus FFmpeg
 pkill -f "ffmpeg"
 
-# Lancer la conversion RTMPS → RTSP avec FFmpeg
-ffmpeg -re -loglevel debug -i "$RTMPS_URL" -c:v copy -c:a copy -f flv "$RTMPS_URL_OUT" &
+# Conversion RTMPS -> RTMP (via NGINX) -> MJPEG
+echo "Lancement du transcodage avec FFmpeg..."
+ffmpeg -re -loglevel debug -i "$RTMPS_URL" \
+    -c:v copy -c:a copy -f flv "$RTMPS_URL_OUT" &
 
 # Lancer FFmpeg et rediriger les logs vers stdout pour Home Assistant
 
