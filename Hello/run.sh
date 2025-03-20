@@ -33,7 +33,7 @@ WS_URL="wss://websocket.myfox.io/events/websocket?token=YzEzNjUzZjkxODU3MTE1ODI5
 echo "🔌 Connexion au WebSocket..."
 
 # 🚀 Lancer WebSocket en arrière-plan
-websocat "$WS_URL" | while read -r message; do
+websocat -u --ping-interval=30 "$WS_URL" | while read -r message; do
     echo "📩 Message reçu : $message"
 
     # 🎥 Vérifier si l'événement est "video.stream.ready"
