@@ -66,20 +66,25 @@ echo "✅ Device ID trouvé : $device_id"
 WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
 echo "🔌 Connexion au WebSocket..."
 
-# 🚀 Lancer WebSocket en arrière-plan
-websocat "$WS_URL" | while read -r message; do
-    echo "📩 Message reçu : $message"
+while true; do
+    # 📡 Connexion au WebSocket
+    # 🚀 Lancer WebSocket en arrière-plan
+    websocat "$WS_URL" | while read -r message; do
+        echo "📩 Message reçu : $message"
 
-    # 🎥 Vérifier si l'événement est "video.stream.ready"
-    if echo "$message" | jq -e '.key == "video.stream.ready"' > /dev/null; then
-        RTMPS_URL=$(echo "$message" | jq -r '.stream_url')
-        echo "🎥 Flux vidéo prêt : $RTMPS_URL"
+        # 🎥 Vérifier si l'événement est "video.stream.ready"
+        if echo "$message" | jq -e '.key == "video.stream.ready"' > /dev/null; then
+            RTMPS_URL=$(echo "$message" | jq -r '.stream_url')
+            echo "🎥 Flux vidéo prêt : $RTMPS_URL"
 
-        # 📂 Sauvegarder l'URL pour que le reste du script l’utilise
-        echo "$RTMPS_URL" > /tmp/rtmps_url
-        break  # ✅ Quitte la boucle dès qu'un flux est disponible
-    fi
-done &  # ⬅️ WebSocket tourne en arrière-plan
+            # 📂 Sauvegarder l'URL pour que le reste du script l’utilise
+            echo "$RTMPS_URL" > /tmp/rtmps_url
+            break  # ✅ Quitte la boucle dès qu'un flux est disponible
+        fi
+    done &  # ⬅️ WebSocket tourne en arrière-plan
+    echo "🔄 WebSocket déconnecté, tentative de reconnexion dans 5s..."
+    sleep 5 # 🔄 Réessayer toutes les 5 secondes
+done
 
 # 🕐 Pause pour s'assurer que le WebSocket est bien établi
 sleep 2
