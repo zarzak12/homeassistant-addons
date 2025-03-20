@@ -1,4 +1,4 @@
-name: "Conversion Flux RTMPS vers HLS"
+name: "Somfy Outdoor"
 description: "Conversion d'un flux RTMPS en HLS"
 version: "1.0.0"
 slug: "somfy-rtmps-to-hls"
