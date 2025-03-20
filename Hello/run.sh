@@ -44,8 +44,9 @@ rm -rf "$HLS_PATH"
 mkdir -p "$HLS_PATH"
 
 # Lancer la conversion avec FFmpeg
-ffmpeg -re -i "$RTMPS_URL" \
-    -c:v copy -c:a aac -b:a 128k -f hls \
+ffmpeg -i "$RTMPS_URL" \
+    -c:v libx264 -preset ultrafast -tune zerolatency -threads 4 \
+    -c:a aac -b:a 128k -f hls \
     -hls_time 5 -hls_list_size 10 -hls_flags delete_segments \
     -hls_segment_filename "$HLS_PATH/segment_%03d.ts" \
     "$HLS_PATH/index.m3u8" &
