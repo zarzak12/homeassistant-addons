@@ -2,7 +2,8 @@ ARG BUILD_FROM
 FROM $BUILD_FROM
 
 # Installer les dépendances
-RUN apk add --no-cache ffmpeg nginx jq python3 py3-pip
+RUN apk add --no-cache ffmpeg nginx jq python3 py3-pip \
+   python3-dev musl-dev libffi-dev openssl-dev cargo gcc g++ make
 
 # Installer les dépendances Python requises
 RUN pip3 install --no-cache-dir \
