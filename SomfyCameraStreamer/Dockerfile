@@ -20,8 +20,6 @@ RUN apk update && apk add --no-cache ffmpeg nginx jq python3 py3-pip \
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
-
-
 WORKDIR /usr/bin
 
 COPY requirements/addon.txt /requirements/addon.txt
