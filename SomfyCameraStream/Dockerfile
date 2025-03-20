@@ -34,7 +34,7 @@ RUN tar -xvf ${VERSION}.tar.gz && mv /usr/bin/SomfyCameraStream-${VERSION} /usr/
 
 # Install python3 requirements
 WORKDIR /usr/bin/SomfyCameraStream
-RUN pip3 install --no-cache-dir -r requirements/addon.txt
+#RUN pip3 install --no-cache-dir -r requirements/addon.txt
 
 # Exposer les ports HTTP pour HLS
 EXPOSE 7080
