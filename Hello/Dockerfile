@@ -2,7 +2,7 @@ ARG BUILD_FROM
 FROM $BUILD_FROM
 
 # Installer les dépendances
-RUN apk add --no-cache ffmpeg nginx jq websocat
+RUN apk add --no-cache ffmpeg nginx jq python3 py3-pip
 
 # Copier les fichiers nécessaires
 COPY run.sh /run.sh

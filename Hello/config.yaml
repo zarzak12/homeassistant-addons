@@ -1,5 +1,5 @@
 name: "Hello world"
-description: "My first real add-on!"
+description: "Somfy Protect plugin"
 version: "1.0.0"
 slug: "hello_world"
 init: false
