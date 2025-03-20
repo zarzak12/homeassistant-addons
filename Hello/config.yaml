@@ -1,7 +1,7 @@
-name: "Hello world"
-description: "My first real add-on!"
+name: "Conversion Flux RTMPS vers HLS"
+description: "Conversion d'un flux RTMPS en HLS"
 version: "1.0.0"
-slug: "hello_world"
+slug: "somfy-rtmps-to-hls"
 init: false
 webui: "http://[HOST]:8080/hls/index.m3u8"
 ports:
