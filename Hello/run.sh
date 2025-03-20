@@ -1,15 +1,16 @@
 #!/bin/sh
 
-client_id=$(echo -n "ODRlZGRmNDgtMmI4ZS0xMWU1LWIyYTUtMTI0Y2ZhYjI1NTk1XzQ3NWJ1cXJmOHY4a2d3b280Z293MDhna2tjMGNrODA0ODh3bzQ0czhvNDhzZzg0azQw" | base64 -d)
-client_secret=$(echo -n "NGRzcWZudGlldTB3Y2t3d280MGt3ODQ4Z3c0bzBjOGs0b3djODBrNGdvMGNzMGs4NDQ=" | base64 -d)
+# 🔐 Déchiffrer client_id et client_secret en Base64
+client_id=$(echo -n "ODRlZGRmNDgtMmI4ZS0xMWU1LWIyYTUtMTI0Y2ZhYjI1NTk1XzQ3NWJ1cXJmOHY4a2d3b280Z293MDhna2tjMGNrODA0ODh3bzQ0czhvNDhzZzg0azQw" | base64 -d -w 0)
+client_secret=$(echo -n "NGRzcWZudGlldTB3Y2t3d280MGt3ODQ4Z3c0bzBjOGs0b3djODBrNGdvMGNzMGs4NDQ=" | base64 -d -w 0)
 
-# Charger les paramètres de configuration
+# 🎯 Charger les paramètres de configuration
 oauth_url="https://sso.myfox.io/oauth/oauth/v2/token"
 username="$(jq -r .somfy_protect.username /data/options.json)"
 password="$(jq -r .somfy_protect.password /data/options.json)"
 
-# Obtenir un access_token
-echo "Obtenion du token OAuth2..."
+# 🔑 Obtenir un access_token
+echo "📡 Obtention du token OAuth2..."
 response=$(curl -s -X POST "$oauth_url" \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "grant_type=password" \
@@ -20,70 +21,49 @@ response=$(curl -s -X POST "$oauth_url" \
 
 token=$(echo "$response" | jq -r .access_token)
 if [ "$token" == "null" ] || [ -z "$token" ]; then
-    echo "Échec de l'authentification. Vérifiez vos identifiants."
+    echo "❌ Échec de l'authentification. Vérifiez vos identifiants."
     exit 1
 fi
 
-echo "Token obtenu avec succès."
+echo "✅ Token obtenu avec succès."
 
-# Vérifier que le token est bien obtenu
-if [ -z "$token" ]; then
-    echo "❌ Erreur : Token OAuth2 introuvable."
-    exit 1
-fi
-
-# URL du WebSocket
+# 🌐 URL du WebSocket
 WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
+echo "🔌 Connexion au WebSocket..."
 
-echo "🔌 Connexion à $WS_URL ..."
+# 🚀 Lancer WebSocket en arrière-plan
+websocat "$WS_URL" | while read -r message; do
+    echo "📩 Message reçu : $message"
 
-# Connexion WebSocket avec websocat
-websocat "$WS_URL"
+    # 🎥 Vérifier si l'événement est "video.stream.ready"
+    if echo "$message" | jq -e '.key == "video.stream.ready"' > /dev/null; then
+        RTMPS_URL=$(echo "$message" | jq -r '.stream_url')
+        echo "🎥 Flux vidéo prêt : $RTMPS_URL"
 
-# Lire les paramètres depuis Home Assistant
-RTMPS_URL=$(jq --raw-output '.rtmps_url_input' /data/options.json)
+        # 📂 Sauvegarder l'URL pour que le reste du script l’utilise
+        echo "$RTMPS_URL" > /tmp/rtmps_url
+        break  # ✅ Quitte la boucle dès qu'un flux est disponible
+    fi
+done &  # ⬅️ WebSocket tourne en arrière-plan
+
+# 🚀 Attendre l'arrivée du flux vidéo
+while [ ! -s /tmp/rtmps_url ]; do
+    echo "⌛ En attente d'un flux RTMPS..."
+    sleep 1
+done
+
+# 📥 Lire l'URL RTMPS extraite
+RTMPS_URL=$(cat /tmp/rtmps_url)
 RTMPS_URL_OUT=$(jq --raw-output '.rtmps_url_output' /data/options.json)
 HLS_PATH="/www/hls"
 
-echo "Input : $RTMPS_URL"
+echo "🎯 Flux RTMPS détecté : $RTMPS_URL"
 
-# Nettoyer l'URL RTMPS pour enlever les caractères d'échappement
-RTMPS_URL=$(echo "$RTMPS_URL" | sed 's|\\||g')
-
-echo "Démarrage du flux RTMPS -> HTTP : $RTMPS_URL"
-
-# Vérifier que l'URL RTMPS est bien définie
-if [ -z "$RTMPS_URL" ]; then
-    echo "Erreur : L'URL RTMPS n'est pas définie"
-    exit 1
-fi
-
-# Vérifier si le port 8070 est libre
-if netstat -tulnp | grep ":7080"; then
-    echo "Attention : Le port 7080 est déjà utilisé, vérifiez qu'il est bien libre."
-fi
-
-# Vérifier que NGINX RTMP fonctionne
-echo "Démarrage du serveur RTMP..."
-nginx
-
-# Arrêter les anciens processus FFmpeg
-pkill -f "ffmpeg"
-
-echo "RTMPS Input: $RTMPS_URL"
-echo "HLS Output Path: $HLS_PATH"
-
-# Vérifier si l'URL RTMPS est bien définie
-if [ -z "$RTMPS_URL" ]; then
-    echo "Erreur : L'URL RTMPS n'est pas définie"
-    exit 1
-fi
-
-# Nettoyer l'ancienne session
+# 🔄 Nettoyer l'ancienne session
 rm -rf "$HLS_PATH"
 mkdir -p "$HLS_PATH"
 
-# Lancer la conversion avec FFmpeg
+# 🎞️ Lancer la conversion RTMPS → HLS
 ffmpeg -i "$RTMPS_URL" \
     -c:v libx264 -preset ultrafast -tune zerolatency -threads 4 \
     -c:a aac -b:a 128k -f hls \
@@ -91,8 +71,8 @@ ffmpeg -i "$RTMPS_URL" \
     -hls_segment_filename "$HLS_PATH/segment_%03d.ts" \
     "$HLS_PATH/index.m3u8" &
 
-# Démarrer Nginx pour servir les fichiers HLS
+# 🖥️ Démarrer Nginx pour diffuser le flux
 nginx -g "daemon off;"
 
-# Empêcher le conteneur de se fermer
+# 🚀 Garder le conteneur actif
 exec tail -f /dev/null
