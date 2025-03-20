@@ -4,8 +4,10 @@ FROM $BUILD_FROM
 # Installer les dépendances
 RUN apk add --no-cache ffmpeg nginx jq python3 py3-pip
 
-# Installer websockets et autres dépendances Python
-RUN pip3 install websockets aiohttp
+# Installer les dépendances Python requises
+RUN pip3 install --no-cache-dir \
+    aiohttp \
+    websockets
 
 # Copier les fichiers nécessaires
 COPY run.sh /run.sh
