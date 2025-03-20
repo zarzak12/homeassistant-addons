@@ -8,6 +8,11 @@ oauth_url="https://sso.myfox.io/oauth/oauth/v2/token"
 username="$(jq -r .somfy_protect.username /data/options.json)"
 password="$(jq -r .somfy_protect.password /data/options.json)"
 
+echo "Client ID: $client_id"
+echo "Client Secret: $client_secret"
+echo "Username: $username"
+echo "Password: $password"
+
 # Obtenir un access_token
 echo "Obtenion du token OAuth2..."
 response=$(curl -s -X POST "$oauth_url" \
