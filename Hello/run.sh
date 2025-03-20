@@ -28,7 +28,8 @@ fi
 echo "✅ Token obtenu avec succès."
 
 # 🌐 URL du WebSocket
-WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
+#WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
+WS_URL="wss://websocket.myfox.io/events/websocket?token=YzEzNjUzZjkxODU3MTE1ODI5ZThjOTliYzA4MzRmODY1NDAyZWZiMjhhZTY0YjgwMWI2ZWM1YTFlM2FmOWMwMA"
 echo "🔌 Connexion au WebSocket..."
 
 # 🚀 Lancer WebSocket en arrière-plan
