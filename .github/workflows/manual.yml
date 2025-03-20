@@ -1,0 +1,22 @@
+name: Build tar.gz
+
+on:
+  push:
+    branches:
+      - main  # Exécute le script quand tu pushes sur la branche main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Création de l'archive tar.gz
+        run: tar -czvf mon_projet.tar.gz SomfyCameraStreamer/
+
+      - name: Upload du fichier comme un artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SomfyCameraStreamer_tar
+          path: SomfyCameraStreamer.tar.gz
