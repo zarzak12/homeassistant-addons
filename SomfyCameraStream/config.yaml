@@ -15,7 +15,14 @@ map:
   - share:rw
   - config:rw
 options:
-  rtmps_url: "rtmps://stream"
+  somfy_protect:
+    username: mail@example.org
+    password: P@ssw0rd
+    site: Maison
 schema:
-  rtmps_url: "str"
-#image: "ghcr.io/home-assistant/{arch}-addon-SomfyCameraStream"
+  somfy_protect:
+    username: str
+    password: str
+    site: str
+ports:
+  "7080/tcp": 7080
