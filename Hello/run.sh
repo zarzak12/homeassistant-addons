@@ -46,9 +46,24 @@ fi
 
 echo "✅ Site ID trouvé : $site_id"
 
+# 📡 Appel API pour récupérer les devices du site
+echo "🔍 Récupération des appareils pour le site : $site_id"
+devices_response=$(curl -s -X GET "https://api.myfox.io/v3/site/$site_id/device" \
+    -H "Authorization: Bearer $token")
+
+# 🛠 Extraction du device_id correspondant à une caméra extérieure
+device_id=$(echo "$devices_response" | jq -r '.items[] | select(.device_definition.device_definition_id == "sp_outdoor_cam1") | .device_id')
+
+# 🛑 Vérification
+if [ -z "$device_id" ] || [ "$device_id" == "null" ]; then
+    echo "❌ Erreur : Aucun device_id trouvé pour une caméra extérieure sur le site \"$site_name\"."
+    exit 1
+fi
+
+echo "✅ Device ID trouvé : $device_id"
+
 # 🌐 URL du WebSocket
-#WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
-WS_URL="wss://websocket.myfox.io/events/websocket?token=YzEzNjUzZjkxODU3MTE1ODI5ZThjOTliYzA4MzRmODY1NDAyZWZiMjhhZTY0YjgwMWI2ZWM1YTFlM2FmOWMwMA"
+WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
 echo "🔌 Connexion au WebSocket..."
 
 # 🚀 Lancer WebSocket en arrière-plan
@@ -70,9 +85,8 @@ done &  # ⬅️ WebSocket tourne en arrière-plan
 sleep 2
 
 # 📡 Demander le démarrage du flux vidéo via l'API
-SITE_ID="itsYi0aEPEeS5EH6X1BESVQFGDWkfT6T"
-DEVICE_ID="x3ZS7P0wwUFjOZ2gXtFyqdUWO8u3LkHK"
-STREAM_URL="https://api.myfox.io/v3/site/$SITE_ID/device/$DEVICE_ID/action"
+
+STREAM_URL="https://api.myfox.io/v3/site/$site_id/device/$device_id/action"
 
 echo "📡 Demande de démarrage du flux vidéo..."
 response=$(curl -s -X POST "$STREAM_URL" \
