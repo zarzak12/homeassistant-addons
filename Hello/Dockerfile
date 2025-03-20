@@ -12,6 +12,7 @@ COPY run.sh /run.sh
 COPY websocket_listener.py srcipts/websocket_listener.py
 COPY nginx.conf /etc/nginx/nginx.conf
 RUN chmod a+x /run.sh
+RUN chmod a+x srcipts/websocket_listener.py
 
 # Exposer les ports HTTP pour HLS
 EXPOSE 7080
