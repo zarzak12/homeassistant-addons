@@ -69,7 +69,7 @@ echo "🔌 Connexion au WebSocket..."
 while true; do
     # 📡 Connexion au WebSocket
     # 🚀 Lancer WebSocket en arrière-plan
-    websocat "$WS_URL" | while read -r message; do
+    websocat -v "$WS_URL" | while read -r message; do
         echo "📩 Message reçu : $message"
 
         # 🎥 Vérifier si l'événement est "video.stream.ready"
