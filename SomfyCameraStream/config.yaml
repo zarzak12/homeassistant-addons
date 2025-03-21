@@ -1,9 +1,7 @@
 name: "Somfy Camera Streamer"
-version: 1.0.0
-slug: "somfy_camera_streamer"
 description: "Somfy Camera Streamer"
-url: https://github.com/zarzak12/SomfyCameraStream
-codenotary: zarzak
+version: "1.0.0"
+slug: "somfy_camera_streamer"
 init: false
 arch:
   - aarch64
