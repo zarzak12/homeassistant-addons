@@ -28,7 +28,7 @@ RUN apk add --no-cache \
     python3-dev \
     yq websocketd websocat
 
-RUN pip install --no-cache-dir websockets
+RUN pip install --no-cache-dir --upgrade pip setuptools && pip install --no-cache-dir websockets
 
 # Build arguments
 ARG BUILD_ARCH
