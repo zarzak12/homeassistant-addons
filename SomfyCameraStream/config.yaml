@@ -7,6 +7,8 @@ arch:
   - aarch64
   - amd64
   - armv7
+ports:
+  9080/tcp: 9080
 options:
   somfy_protect:
     username: mail@example.org
