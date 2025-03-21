@@ -11,7 +11,22 @@ COPY nginx.conf /etc/nginx/nginx.conf
 RUN apk add --no-cache \
     coreutils=9.5-r2 \
     wget=1.25.0-r0 \
-    ffmpeg nginx jq
+    ffmpeg nginx jq \
+    jq python3 py3-pip \
+    ffmpeg-dev \
+    libjxl \
+    libjxl-tools \
+    libsrtp \
+    libsrtp-dev \
+    libvpx \
+    libvpx-dev \
+    linux-headers \
+    opus \
+    opus-dev \
+    py3-opencv \
+    python3 \
+    python3-dev \
+    yq
 
 # Build arguments
 ARG BUILD_ARCH

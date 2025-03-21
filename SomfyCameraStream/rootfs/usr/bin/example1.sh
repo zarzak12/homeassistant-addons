@@ -1,120 +1,128 @@
-#!/bin/sh
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# ==============================================================================
+# Home Assistant Community Add-on: Example
+#
+# Example add-on for Home Assistant.
+# This add-on displays a random quote every X seconds.
+# ==============================================================================
 
-# 🔐 Déchiffrer client_id et client_secret en Base64
-client_id=$(echo -n "ODRlZGRmNDgtMmI4ZS0xMWU1LWIyYTUtMTI0Y2ZhYjI1NTk1XzQ3NWJ1cXJmOHY4a2d3b280Z293MDhna2tjMGNrODA0ODh3bzQ0czhvNDhzZzg0azQw" | base64 -d -w 0)
-client_secret=$(echo -n "NGRzcWZudGlldTB3Y2t3d280MGt3ODQ4Z3c0bzBjOGs0b3djODBrNGdvMGNzMGs4NDQ=" | base64 -d -w 0)
+# ------------------------------------------------------------------------------
+# Get a random quote from quotationspage.com
+#
+# Arguments:
+#   None
+# Returns:
+#   String with the quote
+# ------------------------------------------------------------------------------
+get_quote_online() {
+    local number
+    local html
+    local quote
 
-# 🎯 Charger les paramètres de configuration
-oauth_url="https://sso.myfox.io/oauth/oauth/v2/token"
-username="$(jq -r .somfy_protect.username /data/options.json)"
-password="$(jq -r .somfy_protect.password /data/options.json)"
+    bashio::log.trace "${FUNCNAME[0]}"
 
-# 🔑 Obtenir un access_token
-echo "📡 Obtention du token OAuth2..."
-response=$(curl -s -X POST "$oauth_url" \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "grant_type=password" \
-    -d "client_id=$client_id" \
-    -d "client_secret=$client_secret" \
-    -d "username=$username" \
-    -d "password=$password")
+    number=$(( ( RANDOM % 999 )  + 1 ))
+    html=$(wget -q -O - "http://www.quotationspage.com/quote/${number}.html")
 
-token=$(echo "$response" | jq -r .access_token)
-if [ "$token" == "null" ] || [ -z "$token" ]; then
-    echo "❌ Échec de l'authentification. Vérifiez vos identifiants."
-    exit 1
-fi
+    quote=$(grep -e "<dt>" -e "</dd>" <<< "${html}" \
+        | awk -F'[<>]' '{
+            if($2 ~ /dt/)
+                { print $3 }
+            else if($4 ~ /b/)
+                { print "-- " $7 "  n(" $19 ")"}
+        }'
+    )
 
-echo "✅ Token obtenu avec succès."
+    echo "${quote}"
+}
 
-# 🔄 Récupération du site depuis la configuration
-site_name="$(jq -r .somfy_protect.site /data/options.json)"
+# ------------------------------------------------------------------------------
+# Get a random quote from a prefined set of quotes
+#
+# Arguments:
+#   None
+# Returns:
+#   String with the quote
+# ------------------------------------------------------------------------------
+get_quote_offline() {
+    local -i number
+    local -a quotes
 
-# 📡 Appel API pour récupérer la liste des sites
-echo "🔍 Recherche du site_id pour le site : $site_name"
-sites_response=$(curl -s -X GET "https://api.myfox.io/v3/site" \
-    -H "Authorization: Bearer $token")
+    bashio::log.trace "${FUNCNAME[0]}"
 
-# 🛠 Extraction du site_id correspondant au site_name
-site_id=$(echo "$sites_response" | jq -r --arg site "$site_name" '.items[] | select(.name == $site) | .site_id')
+    quotes+=("Ever tried. Ever failed. No matter. Try Again. Fail again. Fail better.\\n -Samuel Beckett")
+    quotes+=("Never give up, for that is just the place and time that the tide will turn.\\n -Harriet Beecher Stowe")
+    quotes+=("Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time.\\n -Thomas A. Edison")
+    quotes+=("Life isn't about getting and having, it's about giving and being.\\n -Kevin Kruse")
+    quotes+=("Strive not to be a success, but rather to be of value.\\n -Albert Einstein")
+    quotes+=("You miss 100% of the shots you don't take.\\n -Wayne Gretzky")
+    quotes+=("People who are unable to motivate themselves must be content with mediocrity, no matter how impressive their other talents. \\n -Andrew Carnegie")
+    quotes+=("Design is not just what it looks like and feels like. Design is how it works.\\n -Steve Jobs")
+    quotes+=("Only those who dare to fail greatly can ever achieve greatly.\\n -Robert F. Kennedy")
+    quotes+=("All our dreams can come true, if we have the courage to pursue them.\\n -Walt Disney")
+    quotes+=("Success consists of going from failure to failure without loss of enthusiasm.\\n -Winston Churchill")
 
-# 🛑 Vérification
-if [ -z "$site_id" ] || [ "$site_id" == "null" ]; then
-    echo "❌ Erreur : Aucun site_id trouvé pour le site \"$site_name\"."
-    exit 1
-fi
+    number=$(( ( RANDOM % 11 )  + 1 ))
+    echo "${quotes[$number]}"
+}
 
-echo "✅ Site ID trouvé : $site_id"
+# ------------------------------------------------------------------------------
+# Displays a random quote
+#
+# Arguments:
+#   None
+# Returns:
+#   String with the quote
+# -----------------------------------------------------------------------------
+display_quote() {
+    local quote
+    local timestamp
 
-# 📡 Appel API pour récupérer les devices du site
-echo "🔍 Récupération des appareils pour le site : $site_id"
-devices_response=$(curl -s -X GET "https://api.myfox.io/v3/site/$site_id/device" \
-    -H "Authorization: Bearer $token")
+    bashio::log.trace "${FUNCNAME[0]}"
 
-# 🛠 Extraction du device_id correspondant à une caméra extérieure
-device_id=$(echo "$devices_response" | jq -r '.items[] | select(.device_definition.device_definition_id == "sp_outdoor_cam1") | .device_id')
+    if wget -q --spider http://www.quotationspage.com; then
+        quote=$(get_quote_online)
+    else
+        bashio::log.notice \
+            'Could not connect to quotationspage.com, using an offline quote'
+        quote=$(get_quote_offline)
+    fi
 
-# 🛑 Vérification
-if [ -z "$device_id" ] || [ "$device_id" == "null" ]; then
-    echo "❌ Erreur : Aucun device_id trouvé pour une caméra extérieure sur le site \"$site_name\"."
-    exit 1
-fi
+    # shellcheck disable=SC2001
+    quote=$(sed 's/n()//g' <<< "${quote}" | xargs -0 echo | fmt -40)
+    timestamp=$(date +"%T")
 
-echo "✅ Device ID trouvé : $device_id"
+    bashio::log.info "Random quote loaded @ ${timestamp}"
+    echo -e "${quote}"
+}
 
-# 🌐 URL du WebSocket
-WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
-echo "🔌 Connexion au WebSocket..."
+# ==============================================================================
+# RUN LOGIC
+# ------------------------------------------------------------------------------
+main() {
+    local sleep
 
-echo "🔌 Lancement du WebSocket en Python..."
-export WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
-python3 srcipts/websocket_listener.py &  # Le '&' lance le script en arrière-plan
+    bashio::log.trace "${FUNCNAME[0]}"
 
-echo "✅ WebSocket lancé en arrière-plan"
+    while true; do
+        # 📡 Connexion au WebSocket
+        # 🚀 Lancer WebSocket en arrière-plan
+        websocat -v "$WS_URL" | while read -r message; do
+            echo "📩 Message reçu : $message"
 
-# 🕐 Pause pour s'assurer que le WebSocket est bien établi
-sleep 2
+            # 🎥 Vérifier si l'événement est "video.stream.ready"
+            if echo "$message" | jq -e '.key == "video.stream.ready"' > /dev/null; then
+                RTMPS_URL=$(echo "$message" | jq -r '.stream_url')
+                echo "🎥 Flux vidéo prêt : $RTMPS_URL"
 
-# 📡 Demander le démarrage du flux vidéo via l'API
-
-STREAM_URL="https://api.myfox.io/v3/site/$site_id/device/$device_id/action"
-
-echo "📡 Demande de démarrage du flux vidéo..."
-response=$(curl -s -X POST "$STREAM_URL" \
-    -H "Authorization: Bearer $token" \
-    -H "Content-Type: application/json" \
-    -d '{"action": "stream_start"}')
-
-echo "📡 Réponse de l'API : $response"
-
-
-# 🚀 Attendre l'arrivée du flux vidéo
-while [ ! -s /tmp/rtmps_url ]; do
-    echo "⌛ En attente d'un flux RTMPS..."
-    sleep 1
-done
-
-# 📥 Lire l'URL RTMPS extraite
-RTMPS_URL=$(cat /tmp/rtmps_url)
-RTMPS_URL_OUT=$(jq --raw-output '.rtmps_url_output' /data/options.json)
-HLS_PATH="/www/hls"
-
-echo "🎯 Flux RTMPS détecté : $RTMPS_URL"
-
-# 🔄 Nettoyer l'ancienne session
-rm -rf "$HLS_PATH"
-mkdir -p "$HLS_PATH"
-
-# 🎞️ Lancer la conversion RTMPS → HLS
-ffmpeg -i "$RTMPS_URL" \
-    -c:v libx264 -preset ultrafast -tune zerolatency -threads 4 \
-    -c:a aac -b:a 128k -f hls \
-    -hls_time 5 -hls_list_size 10 -hls_flags delete_segments \
-    -hls_segment_filename "$HLS_PATH/segment_%03d.ts" \
-    "$HLS_PATH/index.m3u8" &
-
-# 🖥️ Démarrer Nginx pour diffuser le flux
-nginx -g "daemon off;"
-
-# 🚀 Garder le conteneur actif
-exec tail -f /dev/null
+                # 📂 Sauvegarder l'URL pour que le reste du script l’utilise
+                echo "$RTMPS_URL" > /tmp/rtmps_url
+                break  # ✅ Quitte la boucle dès qu'un flux est disponible
+            fi
+        done &  # ⬅️ WebSocket tourne en arrière-plan
+        echo "🔄 WebSocket déconnecté, tentative de reconnexion dans 5s..."
+        sleep 5 # 🔄 Réessayer toutes les 5 secondes
+    done &  # ⬅️ WebSocket tourne en arrière-plan
+}
+main "$@"

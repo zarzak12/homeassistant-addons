@@ -70,6 +70,8 @@ echo "🔌 Lancement du WebSocket en Python..."
 export WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
 python3 srcipts/websocket_listener.py &  # Le '&' lance le script en arrière-plan
 
+
+
 echo "✅ WebSocket lancé en arrière-plan"
 
 # 🕐 Pause pour s'assurer que le WebSocket est bien établi
