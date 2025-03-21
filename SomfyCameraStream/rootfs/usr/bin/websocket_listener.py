@@ -8,7 +8,8 @@ import logging
 # 🔧 Configuration du logging
 logging.basicConfig(
     level=logging.INFO,
-    format="[%H:%M:%S] %(levelname)s: %(message)s",
+    format="[%(asctime)s] %(levelname)s: %(message)s",
+    datefmt="%H:%M:%S",  # Format HH:MM:SS
     handlers=[
         logging.StreamHandler(sys.stdout)
     ]
