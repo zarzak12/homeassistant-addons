@@ -5,10 +5,6 @@
 # Example init script, runs before any other service
 # ==============================================================================
 
-bashio::log.info "Oh, hi! I'm the init script!"
-
-#!/bin/sh
-
 # 🔐 Déchiffrer client_id et client_secret en Base64
 client_id=$(echo -n "ODRlZGRmNDgtMmI4ZS0xMWU1LWIyYTUtMTI0Y2ZhYjI1NTk1XzQ3NWJ1cXJmOHY4a2d3b280Z293MDhna2tjMGNrODA0ODh3bzQ0czhvNDhzZzg0azQw" | base64 -d -w 0)
 client_secret=$(echo -n "NGRzcWZudGlldTB3Y2t3d280MGt3ODQ4Z3c0bzBjOGs0b3djODBrNGdvMGNzMGs4NDQ=" | base64 -d -w 0)
@@ -30,7 +26,7 @@ response=$(curl -s -X POST "$oauth_url" \
 
 token=$(echo "$response" | jq -r .access_token)
 if [ "$token" == "null" ] || [ -z "$token" ]; then
-    bashio::log.info "❌ Échec de l'authentification. Vérifiez vos identifiants."
+    bashio::log.error "❌ Échec de l'authentification. Vérifiez vos identifiants."
     exit 1
 fi
 
@@ -49,7 +45,7 @@ site_id=$(echo "$sites_response" | jq -r --arg site "$site_name" '.items[] | sel
 
 # 🛑 Vérification
 if [ -z "$site_id" ] || [ "$site_id" == "null" ]; then
-    bashio::log.info "❌ Erreur : Aucun site_id trouvé pour le site \"$site_name\"."
+    bashio::log.error "❌ Erreur : Aucun site_id trouvé pour le site \"$site_name\"."
     exit 1
 fi
 
@@ -65,7 +61,7 @@ device_id=$(echo "$devices_response" | jq -r '.items[] | select(.device_definiti
 
 # 🛑 Vérification
 if [ -z "$device_id" ] || [ "$device_id" == "null" ]; then
-    bashio::log.info "❌ Erreur : Aucun device_id trouvé pour une caméra extérieure sur le site \"$site_name\"."
+    bashio::log.error "❌ Erreur : Aucun device_id trouvé pour une caméra extérieure sur le site \"$site_name\"."
     exit 1
 fi
 
