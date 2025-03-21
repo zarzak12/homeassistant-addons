@@ -138,6 +138,7 @@ ffmpeg -i "$RTMPS_URL" \
     "$HLS_PATH/index.m3u8" &
 
 # 🖥️ Démarrer Nginx pour diffuser le flux
+bashio::log.info "🎥 Lancement du streaming du flux..."
 nginx -g "daemon off;"
 
 # 🚀 Garder le conteneur actif
