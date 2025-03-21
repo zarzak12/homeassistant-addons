@@ -77,7 +77,7 @@ python3 /usr/bin/websocket_listener.py &  # Le '&' lance le script en arrière-p
 bashio::log.info "✅ WebSocket lancé en arrière-plan"
 
 # 🕐 Pause pour s'assurer que le WebSocket est bien établi
-sleep 10
+sleep 5
 
 # 📡 Demander le démarrage du flux vidéo via l'API
 STREAM_URL="https://api.myfox.io/v3/site/$site_id/device/$device_id/action"
@@ -128,9 +128,6 @@ fi
 # Vérifier que NGINX RTMP fonctionne
 echo "Démarrage du serveur RTMP..."
 nginx
-
-# Arrêter les anciens processus FFmpeg
-pkill -f "ffmpeg"
 
 # 🎞️ Lancer la conversion RTMPS → HLS
 ffmpeg -i "$RTMPS_URL" \
