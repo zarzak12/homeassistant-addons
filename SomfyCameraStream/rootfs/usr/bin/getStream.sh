@@ -1,3 +1,10 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# ==============================================================================
+# Home Assistant Community Add-on: Example
+# Example init script, runs before any other service
+# ==============================================================================
+
 # 🚀 Attendre l'arrivée du flux vidéo
 timeout=90
 elapsed=0
