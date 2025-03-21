@@ -68,7 +68,6 @@ fi
 bashio::log.info "✅ Device ID trouvé : $device_id"
 
 # 🌐 URL du WebSocket
-WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
 bashio::log.info "🔌 Connexion au WebSocket..."
 
 bashio::log.info "🔌 Lancement du WebSocket en Python..."
