@@ -152,7 +152,7 @@ while true; do
 
         # 🖥️ Démarrer Nginx pour diffuser le flux
         bashio::log.info "🎥 Lancement du streaming du flux..."
-        nginx -g "daemon off;"
+        nginx -g "daemon off;" &
 
         bashio::log.info "🚀 Vérification du statut de Nginx..."
         if ! pgrep -x "nginx" > /dev/null; then
