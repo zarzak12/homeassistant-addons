@@ -120,45 +120,52 @@ while [ ! -s /tmp/rtmps_url ]; do
     sleep 1
 done
 
-# 📥 Lire l'URL RTMPS extraite
-RTMPS_URL=$(cat /tmp/rtmps_url)
-RTMPS_URL_OUT=$(jq --raw-output '.rtmps_url_output' /data/options.json)
-HLS_PATH="/www/hls"
+while true; do
+    while [ ! -s /tmp/rtmps_url ]; do
+        # 📥 Lire l'URL RTMPS extraite
+        RTMPS_URL=$(cat /tmp/rtmps_url)
+        RTMPS_URL_OUT=$(jq --raw-output '.rtmps_url_output' /data/options.json)
+        HLS_PATH="/www/hls"
 
-bashio::log.info "🎯 Flux RTMPS détecté : $RTMPS_URL"
+        bashio::log.info "🎯 Flux RTMPS détecté : $RTMPS_URL"
 
-# 🔄 Nettoyer l'ancienne session
-rm -rf "$HLS_PATH"
-mkdir -p "$HLS_PATH"
+        # 🔄 Nettoyer l'ancienne session
+        rm -rf "$HLS_PATH"
+        mkdir -p "$HLS_PATH"
 
-# Vérifier si le port 7080 est libre
-if netstat -tulnp | grep ":7080"; then
-    echo "Attention : Le port 7080 est déjà utilisé, vérifiez qu'il est bien libre."
-fi
+        # Vérifier si le port 7080 est libre
+        if netstat -tulnp | grep ":7080"; then
+            echo "Attention : Le port 7080 est déjà utilisé, vérifiez qu'il est bien libre."
+        fi
 
-# Vérifier que NGINX RTMP fonctionne
-#echo "Démarrage du serveur RTMP..."
-#nginx
+        # Vérifier que NGINX RTMP fonctionne
+        #echo "Démarrage du serveur RTMP..."
+        #nginx
 
-# 🎞️ Lancer la conversion RTMPS → HLS
-ffmpeg -i "$RTMPS_URL" \
-    -c:v libx264 -preset ultrafast -tune zerolatency -threads 4 \
-    -c:a aac -b:a 128k -f hls \
-    -hls_time 5 -hls_list_size 10 -hls_flags delete_segments \
-    -hls_segment_filename "$HLS_PATH/segment_%03d.ts" \
-    "$HLS_PATH/index.m3u8" &
+        # 🎞️ Lancer la conversion RTMPS → HLS
+        ffmpeg -i "$RTMPS_URL" \
+            -c:v libx264 -preset ultrafast -tune zerolatency -threads 4 \
+            -c:a aac -b:a 128k -f hls \
+            -hls_time 5 -hls_list_size 10 -hls_flags delete_segments \
+            -hls_segment_filename "$HLS_PATH/segment_%03d.ts" \
+            "$HLS_PATH/index.m3u8" &
 
-# 🖥️ Démarrer Nginx pour diffuser le flux
-bashio::log.info "🎥 Lancement du streaming du flux..."
-nginx -g "daemon off;"
+        # 🖥️ Démarrer Nginx pour diffuser le flux
+        bashio::log.info "🎥 Lancement du streaming du flux..."
+        nginx -g "daemon off;"
 
-bashio::log.info "🚀 Vérification du statut de Nginx..."
-if ! pgrep -x "nginx" > /dev/null; then
-    bashio::log.error "❌ Nginx ne s'est pas lancé correctement !"
-    exit 1
-else
-    bashio::log.info "✅ Nginx s'est lancé correctement."
-fi
+        bashio::log.info "🚀 Vérification du statut de Nginx..."
+        if ! pgrep -x "nginx" > /dev/null; then
+            bashio::log.error "❌ Nginx ne s'est pas lancé correctement !"
+            exit 1
+        else
+            bashio::log.info "✅ Nginx s'est lancé correctement."
+        fi
+    done
+    sleep 1
+done &
+
+
 
 # 🚀 Garder le conteneur actif
 exec tail -f /dev/null
