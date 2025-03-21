@@ -21,3 +21,9 @@ schema:
     site: str
   log_level: list(trace|debug|info|notice|warning|error|fatal)
   seconds_between_quotes: int(1,120)
+# 🎯 Activation d'Ingress
+ingress: true
+ingress_port: 9080
+ingress_entry: "/"
+panel_icon: "mdi:cctv"
+panel_title: "Caméra Somfy"
