@@ -100,6 +100,7 @@ while true; do
         elapsed=$((elapsed + 1))
 
         if [ $elapsed -ge $timeout ]; then
+            rm /tmp/rtmps_url
             bashio::log.info "✅Demande de renouvellement du flux vidéo /90s..."
             response=$(curl -s -X POST "$STREAM_URL" \
                 -H "Authorization: Bearer $token" \
@@ -109,7 +110,6 @@ while true; do
             elapsed=0
         fi
     done
-    rm /tmp/rtmps_url
     sleep 90
     elapsed=0
 done &
