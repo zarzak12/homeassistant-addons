@@ -90,24 +90,7 @@ response=$(curl -s -X POST "$STREAM_URL" \
 
 bashio::log.info "📡 Réponse de l'API : $response"
 
-# 🚀 Attendre l'arrivée du flux vidéo
-timeout=90
-elapsed=0
-while [ ! -s /tmp/rtmps_url ]; do
-    bashio::log.info "⌛ En attente d'un flux RTMPS..."
-    sleep 1
-    elapsed=$((elapsed + 1))
-
-    if [ $elapsed -ge $timeout ]; then
-        bashio::log.info "📡 Demande de démarrage du flux vidéo..."
-        response=$(curl -s -X POST "$STREAM_URL" \
-            -H "Authorization: Bearer $token" \
-            -H "Content-Type: application/json" \
-            -d '{"action": "stream_start"}')
-        bashio::log.info "📡 Réponse de l'API : $response"
-    fi
-
-done &
+s6-svc -u /var/run/s6/services/getStream
 
 # 📥 Lire l'URL RTMPS extraite
 RTMPS_URL=$(cat /tmp/rtmps_url)

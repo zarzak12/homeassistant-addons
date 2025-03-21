@@ -105,24 +105,27 @@ main() {
 
     bashio::log.trace "${FUNCNAME[0]}"
 
+    # 🚀 Attendre l'arrivée du flux vidéo
+    timeout=90
+    elapsed=0
     while true; do
-        # 📡 Connexion au WebSocket
-        # 🚀 Lancer WebSocket en arrière-plan
-        websocat -v "$WS_URL" | while read -r message; do
-            echo "📩 Message reçu : $message"
+        while [ ! -s /tmp/rtmps_url ]; do
+            bashio::log.info "⌛ En attente d'un flux RTMPS..."
+            sleep 1
+            elapsed=$((elapsed + 1))
 
-            # 🎥 Vérifier si l'événement est "video.stream.ready"
-            if echo "$message" | jq -e '.key == "video.stream.ready"' > /dev/null; then
-                RTMPS_URL=$(echo "$message" | jq -r '.stream_url')
-                echo "🎥 Flux vidéo prêt : $RTMPS_URL"
-
-                # 📂 Sauvegarder l'URL pour que le reste du script l’utilise
-                echo "$RTMPS_URL" > /tmp/rtmps_url
-                break  # ✅ Quitte la boucle dès qu'un flux est disponible
+            if [ $elapsed -ge $timeout ]; then
+                bashio::log.info "📡 Demande de démarrage du flux vidéo /90s..."
+                response=$(curl -s -X POST "$STREAM_URL" \
+                    -H "Authorization: Bearer $token" \
+                    -H "Content-Type: application/json" \
+                    -d '{"action": "stream_start"}')
+                bashio::log.info "📡 Réponse de l'API : $response"
+                elapsed=0
             fi
-        done &  # ⬅️ WebSocket tourne en arrière-plan
-        echo "🔄 WebSocket déconnecté, tentative de reconnexion dans 5s..."
-        sleep 5 # 🔄 Réessayer toutes les 5 secondes
-    done &  # ⬅️ WebSocket tourne en arrière-plan
+        done
+        sleep 90
+        elapsed=0
+    done &
 }
 main "$@"

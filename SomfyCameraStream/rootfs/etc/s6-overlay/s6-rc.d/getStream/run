@@ -5,6 +5,6 @@
 # Runs example1 script
 # ==============================================================================
 
-bashio::log.info "Starting Example1..."
+bashio::log.info "Starting getStream..."
 
-exec /usr/bin/example1.sh
+exec /usr/bin/getStream.sh
