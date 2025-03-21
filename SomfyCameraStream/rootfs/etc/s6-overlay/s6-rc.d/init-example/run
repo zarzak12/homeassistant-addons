@@ -73,7 +73,7 @@ bashio::log.info "🔌 Connexion au WebSocket..."
 
 bashio::log.info "🔌 Lancement du WebSocket en Python..."
 export WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
-python3 srcipts/websocket_listener.py &  # Le '&' lance le script en arrière-plan
+python3 /usr/bin/websocket_listener.py &  # Le '&' lance le script en arrière-plan
 
 bashio::log.info "✅ WebSocket lancé en arrière-plan"
 
