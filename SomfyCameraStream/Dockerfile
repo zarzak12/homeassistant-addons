@@ -38,7 +38,7 @@ RUN /opt/venv/bin/pip install --no-cache-dir websockets aiohttp
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Exposer les ports HTTP pour HLS
-EXPOSE 7081
+EXPOSE 9080
 
 # Build arguments
 ARG BUILD_ARCH
