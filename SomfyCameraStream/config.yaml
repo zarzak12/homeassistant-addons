@@ -1,28 +1,18 @@
-# https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
-name: SomfyCameraStream
-version: "1.0.0"
-slug: SomfyCameraStream
-description: Un module permettant d'afficher un flux RTMPS dans Home Assistant.
-url: "https://github.com/zarzak12/homeassistant-addons/tree/main/SomfyCameraStream"
+name: Somfy Camera Streamer
+version: 1.0.0
+slug: somfy_camera_streamer
+description: Somfy Camera Streamer
+url: https://github.com/zarzak12/SomfyCameraStream
+codenotary: zarzak
+init: false
 arch:
-  - armhf
-  - armv7
   - aarch64
   - amd64
-  - i386
-init: false
-map:
-  - share:rw
-  - config:rw
+  - armv7
 options:
-  somfy_protect:
-    username: mail@example.org
-    password: P@ssw0rd
-    site: Maison
+  log_level: info
+  seconds_between_quotes: 5
 schema:
-  somfy_protect:
-    username: str
-    password: str
-    site: str
-ports:
-  "7080/tcp": 7080
+  log_level: list(trace|debug|info|notice|warning|error|fatal)
+  seconds_between_quotes: int(1,120)
+image: ghcr.io/hassio-addons/example/{arch}
