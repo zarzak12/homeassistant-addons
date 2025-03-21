@@ -8,8 +8,16 @@ arch:
   - amd64
   - armv7
 options:
+  somfy_protect:
+    username: mail@example.org
+    password: "P@ssw0rd"
+    site: Maison
   log_level: info
   seconds_between_quotes: 5
 schema:
+  somfy_protect:
+    username: str
+    password: password
+    site: str
   log_level: list(trace|debug|info|notice|warning|error|fatal)
   seconds_between_quotes: int(1,120)

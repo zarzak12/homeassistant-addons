@@ -4,11 +4,14 @@ FROM ${BUILD_FROM}
 
 # Copy root filesystem
 COPY rootfs /
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Setup base
 RUN apk add --no-cache \
     coreutils=9.5-r2 \
-    wget=1.25.0-r0
+    wget=1.25.0-r0 \
+    ffmpeg nginx jq
 
 # Build arguments
 ARG BUILD_ARCH
