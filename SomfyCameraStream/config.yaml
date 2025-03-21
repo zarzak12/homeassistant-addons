@@ -1,7 +1,8 @@
-name: "Somfy Camera Streamer"
-version: 1.0.0
+---
+name: Somfy Camera Streamer
+version: dev
 slug: somfy_camera_streamer
-description: "Somfy Camera Streamer"
+description: Somfy Camera Streamer
 url: https://github.com/zarzak12/SomfyCameraStream
 codenotary: zarzak
 init: false
@@ -15,4 +16,3 @@ options:
 schema:
   log_level: list(trace|debug|info|notice|warning|error|fatal)
   seconds_between_quotes: int(1,120)
-#image: ghcr.io/hassio-addons/example/{arch}
