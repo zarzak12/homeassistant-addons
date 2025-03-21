@@ -138,10 +138,6 @@ while true; do
             echo "Attention : Le port 7080 est déjà utilisé, vérifiez qu'il est bien libre."
         fi
 
-        # Vérifier que NGINX RTMP fonctionne
-        #echo "Démarrage du serveur RTMP..."
-        #nginx
-
         # 🎞️ Lancer la conversion RTMPS → HLS
         ffmpeg -i "$RTMPS_URL" \
             -c:v libx264 -preset ultrafast -tune zerolatency -threads 4 \
@@ -158,8 +154,6 @@ while true; do
         if ! pgrep -x "nginx" > /dev/null; then
             bashio::log.error "❌ Nginx ne s'est pas lancé correctement !"
             exit 1
-        else
-            bashio::log.info "✅ Nginx s'est lancé correctement."
         fi
     done
     sleep 1
