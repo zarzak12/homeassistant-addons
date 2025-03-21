@@ -98,7 +98,7 @@ while [ ! -s /tmp/rtmps_url ]; do
     sleep 1
     elapsed=$((elapsed + 1))
 
-    if [ $elapsed -lt $timeout ]; then
+    if [ $elapsed -ge $timeout ]; then
         bashio::log.info "📡 Demande de démarrage du flux vidéo..."
         response=$(curl -s -X POST "$STREAM_URL" \
             -H "Authorization: Bearer $token" \
