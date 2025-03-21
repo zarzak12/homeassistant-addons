@@ -26,7 +26,7 @@ RUN apk add --no-cache \
     py3-opencv \
     python3 \
     python3-dev \
-    yq
+    yq websocketd websocat \
 
 # Build arguments
 ARG BUILD_ARCH
