@@ -155,6 +155,8 @@ while true; do
         exit 1
     fi
 
+    sleep 90
+
     # Attendre un nouveau flux vidéo
     bashio::log.info "⌛ En attente d'un nouveau flux RTMPS..."
     while [ ! -s /tmp/rtmps_url ]; do
