@@ -9,7 +9,7 @@ import logging
 logging.basicConfig(
     level=logging.INFO,
     format="[%(asctime)s] %(levelname)s: %(message)s",
-    datefmt="%H:%M:%S",  # Format HH:MM:SS
+    #datefmt="%H:%M:%S",  # Format HH:MM:SS
     handlers=[
         logging.StreamHandler(sys.stdout)
     ]
