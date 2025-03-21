@@ -28,6 +28,8 @@ RUN apk add --no-cache \
     python3-dev \
     yq websocketd websocat
 
+RUN pip install websockets
+
 # Build arguments
 ARG BUILD_ARCH
 ARG BUILD_DATE
