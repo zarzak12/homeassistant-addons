@@ -35,7 +35,10 @@ RUN python3 -m venv /opt/venv
 RUN /opt/venv/bin/pip install --no-cache-dir websockets aiohttp
 
 # Définir le venv comme environnement par défaut
-ENV PATH="/opt/venv/bin:$PATH"    
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Exposer les ports HTTP pour HLS
+EXPOSE 7080
 
 # Build arguments
 ARG BUILD_ARCH

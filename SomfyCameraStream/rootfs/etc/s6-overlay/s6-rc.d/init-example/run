@@ -120,6 +120,18 @@ bashio::log.info "🎯 Flux RTMPS détecté : $RTMPS_URL"
 rm -rf "$HLS_PATH"
 mkdir -p "$HLS_PATH"
 
+# Vérifier si le port 7080 est libre
+if netstat -tulnp | grep ":7080"; then
+    echo "Attention : Le port 7080 est déjà utilisé, vérifiez qu'il est bien libre."
+fi
+
+# Vérifier que NGINX RTMP fonctionne
+echo "Démarrage du serveur RTMP..."
+nginx
+
+# Arrêter les anciens processus FFmpeg
+pkill -f "ffmpeg"
+
 # 🎞️ Lancer la conversion RTMPS → HLS
 ffmpeg -i "$RTMPS_URL" \
     -c:v libx264 -preset ultrafast -tune zerolatency -threads 4 \
