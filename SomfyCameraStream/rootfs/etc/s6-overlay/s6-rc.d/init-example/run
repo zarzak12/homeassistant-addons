@@ -165,7 +165,5 @@ while true; do
     sleep 1
 done &
 
-
-
 # 🚀 Garder le conteneur actif
 exec tail -f /dev/null
