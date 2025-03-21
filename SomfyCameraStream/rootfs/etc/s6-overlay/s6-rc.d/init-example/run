@@ -90,7 +90,7 @@ response=$(curl -s -X POST "$STREAM_URL" \
 
 bashio::log.info "📡 Réponse de l'API : $response"
 
-s6-svc -u /var/run/s6/services/getStream
+s6-rc -u change getStream
 
 # 📥 Lire l'URL RTMPS extraite
 RTMPS_URL=$(cat /tmp/rtmps_url)
