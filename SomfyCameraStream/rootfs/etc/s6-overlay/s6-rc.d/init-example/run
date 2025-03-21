@@ -77,10 +77,9 @@ python3 /usr/bin/websocket_listener.py &  # Le '&' lance le script en arrière-p
 bashio::log.info "✅ WebSocket lancé en arrière-plan"
 
 # 🕐 Pause pour s'assurer que le WebSocket est bien établi
-sleep 2
+sleep 10
 
 # 📡 Demander le démarrage du flux vidéo via l'API
-
 STREAM_URL="https://api.myfox.io/v3/site/$site_id/device/$device_id/action"
 
 bashio::log.info "📡 Demande de démarrage du flux vidéo..."
@@ -92,9 +91,22 @@ response=$(curl -s -X POST "$STREAM_URL" \
 bashio::log.info "📡 Réponse de l'API : $response"
 
 # 🚀 Attendre l'arrivée du flux vidéo
+timeout=10
+elapsed=0
 while [ ! -s /tmp/rtmps_url ]; do
     bashio::log.info "⌛ En attente d'un flux RTMPS..."
     sleep 1
+    elapsed=$((elapsed + 1))
+
+    if [ $elapsed -lt $timeout ]; then
+        bashio::log.info "📡 Demande de démarrage du flux vidéo..."
+        response=$(curl -s -X POST "$STREAM_URL" \
+            -H "Authorization: Bearer $token" \
+            -H "Content-Type: application/json" \
+            -d '{"action": "stream_start"}')
+        bashio::log.info "📡 Réponse de l'API : $response"
+    fi
+
 done
 
 # 📥 Lire l'URL RTMPS extraite
