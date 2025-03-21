@@ -1,3 +1,4 @@
+#!/opt/venv/bin/python
 import asyncio
 import websockets
 import json

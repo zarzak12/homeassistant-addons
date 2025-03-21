@@ -28,7 +28,9 @@ RUN apk add --no-cache \
     python3-dev \
     yq websocketd websocat
 
-RUN pip3 install --no-cache-dir websockets
+RUN python3 -m venv /opt/venv && \
+    . /opt/venv/bin/activate && \
+    pip install --no-cache-dir websockets
 
 # Build arguments
 ARG BUILD_ARCH
