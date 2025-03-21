@@ -155,6 +155,8 @@ bashio::log.info "🚀 Vérification du statut de Nginx..."
 if ! pgrep -x "nginx" > /dev/null; then
     bashio::log.error "❌ Nginx ne s'est pas lancé correctement !"
     exit 1
+else
+    bashio::log.info "✅ Nginx s'est lancé correctement."
 fi
 
 # 🚀 Garder le conteneur actif
