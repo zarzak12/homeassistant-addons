@@ -28,9 +28,14 @@ RUN apk add --no-cache \
     python3-dev \
     yq websocketd websocat
 
-RUN python3 -m venv /opt/venv && \
-    . /opt/venv/bin/activate && \
-    pip install --no-cache-dir websockets
+# Créer un environnement virtuel Python
+RUN python3 -m venv /opt/venv
+
+# Activer le venv et installer les dépendances
+RUN /opt/venv/bin/pip install --no-cache-dir websockets aiohttp
+
+# Définir le venv comme environnement par défaut
+ENV PATH="/opt/venv/bin:$PATH"    
 
 # Build arguments
 ARG BUILD_ARCH

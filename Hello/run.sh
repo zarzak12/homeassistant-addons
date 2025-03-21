@@ -67,6 +67,10 @@ WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
 echo "🔌 Connexion au WebSocket..."
 
 echo "🔌 Lancement du WebSocket en Python..."
+
+# Activer l'environnement virtuel
+source /opt/venv/bin/activate
+
 export WS_URL="wss://websocket.myfox.io/events/websocket?token=$token"
 python3 srcipts/websocket_listener.py &  # Le '&' lance le script en arrière-plan
 
