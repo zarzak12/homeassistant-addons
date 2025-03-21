@@ -151,5 +151,11 @@ ffmpeg -i "$RTMPS_URL" \
 bashio::log.info "🎥 Lancement du streaming du flux..."
 nginx -g "daemon off;"
 
+bashio::log.info "🚀 Vérification du statut de Nginx..."
+if ! pgrep -x "nginx" > /dev/null; then
+    bashio::log.error "❌ Nginx ne s'est pas lancé correctement !"
+    exit 1
+fi
+
 # 🚀 Garder le conteneur actif
 exec tail -f /dev/null
