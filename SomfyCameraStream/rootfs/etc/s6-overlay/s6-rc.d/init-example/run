@@ -145,15 +145,6 @@ while true; do
         -hls_segment_filename "$HLS_PATH/segment_%03d.ts" \
         "$HLS_PATH/index.m3u8" &
 
-    # 🖥️ Démarrer Nginx pour diffuser le flux
-    bashio::log.info "🎥 Lancement du streaming du flux..."
-    nginx -g "daemon off;" &
-
-    bashio::log.info "🚀 Vérification du statut de Nginx..."
-    if ! pgrep -x "nginx" > /dev/null; then
-        bashio::log.error "❌ Nginx ne s'est pas lancé correctement !"
-        exit 1
-    fi
 
     sleep 90
 
