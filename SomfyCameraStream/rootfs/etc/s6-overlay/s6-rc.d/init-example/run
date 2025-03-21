@@ -113,8 +113,11 @@ while true; do
     elapsed=0
 done &
 
-# 🕐 Pause pour s'assurer que le WebSocket est bien établi
-sleep 5
+# 🚀 Attendre l'arrivée du flux vidéo
+while [ ! -s /tmp/rtmps_url ]; do
+    bashio::log.info "⌛ En attente d'un flux RTMPS..."
+    sleep 1
+done
 
 # 📥 Lire l'URL RTMPS extraite
 RTMPS_URL=$(cat /tmp/rtmps_url)
