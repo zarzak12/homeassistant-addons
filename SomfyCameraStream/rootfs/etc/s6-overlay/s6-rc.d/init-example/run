@@ -121,7 +121,7 @@ while [ ! -s /tmp/rtmps_url ]; do
 done
 
 while true; do
-    while [ ! -s /tmp/rtmps_url ]; do
+    while [ -s /tmp/rtmps_url ]; do
         # 📥 Lire l'URL RTMPS extraite
         RTMPS_URL=$(cat /tmp/rtmps_url)
         RTMPS_URL_OUT=$(jq --raw-output '.rtmps_url_output' /data/options.json)
