@@ -8,7 +8,7 @@ import logging
 # 🔧 Configuration du logging
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
+    format="[%H:%M:%S] %(levelname)s: %(message)s",
     handlers=[
         logging.StreamHandler(sys.stdout)
     ]
@@ -33,9 +33,9 @@ async def connect_websocket():
                         data = json.loads(message)
                         logging.info(f"📩 Message reçu : {data}")
 
-                        # 🎯 Vérifier si le message contient une URL RTMPS
-                        if "rtmps_url" in data:
-                            rtmps_url = data["rtmps_url"]
+                        # 🎯 Vérifier si le message contient une URL stream_url
+                        if "stream_url" in data:
+                            rtmps_url = data["stream_url"]
                             logging.info(f"🎥 URL RTMPS détectée : {rtmps_url}")
 
                             # 💾 Sauvegarder l'URL pour que run.sh puisse l'utiliser
