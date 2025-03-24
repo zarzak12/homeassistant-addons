@@ -1,5 +1,5 @@
 name: "Somfy Camera Streamer"
-description: "Somfy Camera Streamer"
+description: "Permet de streamer les caméras Somfy Protect"
 version: "1.0.0"
 slug: "somfy_camera_streamer"
 init: false
