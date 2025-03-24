@@ -133,7 +133,7 @@ while true; do
 
     # 🔄 Nettoyer l'ancienne session
     rm -rf "$HLS_PATH"
-    mkdir -p "$HLS_PATH"
+    mkdir -p "$HLS_PATH" && chmod -R 777 "$HLS_PATH"
 
     # Vérifier si le port 7081 est libre
     if netstat -tulnp | grep ":9080"; then
