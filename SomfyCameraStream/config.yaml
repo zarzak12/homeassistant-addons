@@ -26,6 +26,6 @@ schema:
 # 🎯 Activation d'Ingress
 ingress: true
 ingress_port: 9080
-ingress_entry: "/"
+ingress_entry: "/www/hls"
 panel_icon: "mdi:cctv"
 panel_title: "Caméra Somfy"
