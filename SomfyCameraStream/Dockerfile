@@ -24,6 +24,8 @@ RUN apk add --no-cache \
     py3-opencv \
     python3 \
     python3-dev \
+    nginx \
+    supervisor \
     yq websocketd websocat
 
 # Créer un environnement virtuel Python
@@ -35,8 +37,15 @@ RUN /opt/venv/bin/pip install --no-cache-dir websockets aiohttp
 # Définir le venv comme environnement par défaut
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Exposer les ports HTTP pour HLS
-EXPOSE 9080
+# Copier la configuration Nginx et Supervisord
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY supervisord.conf /etc/supervisord.conf
+
+# Exposer le port utilisé par Nginx pour l'Ingress
+EXPOSE 80
+
+# Commande de démarrage : Supervisord lance Nginx et ton application
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
 
 # Build arguments
 ARG BUILD_ARCH
