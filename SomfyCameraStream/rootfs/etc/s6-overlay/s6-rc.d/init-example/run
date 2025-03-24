@@ -133,8 +133,8 @@ while true; do
     mkdir -p "$HLS_PATH"
 
     # Vérifier si le port 7081 est libre
-    if netstat -tulnp | grep ":7081"; then
-        echo "Attention : Le port 7081 est déjà utilisé, vérifiez qu'il est bien libre."
+    if netstat -tulnp | grep ":9080"; then
+        echo "Attention : Le port 9080 est déjà utilisé, vérifiez qu'il est bien libre."
     fi
 
     # 🎞️ Lancer la conversion RTMPS → HLS
@@ -145,6 +145,7 @@ while true; do
         -hls_segment_filename "$HLS_PATH/segment_%03d.ts" \
         "$HLS_PATH/index.m3u8" &
 
+    > /tmp/rtmps_url  # Mettre à vide le fichier pour attendre un nouveau flux
 
     sleep 90
 
