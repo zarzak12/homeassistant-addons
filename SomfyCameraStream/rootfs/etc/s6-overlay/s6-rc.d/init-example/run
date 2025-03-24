@@ -141,14 +141,19 @@ while true; do
     fi
 
     # 🎞️ Lancer la conversion RTMPS → HLS
-    ffmpeg -i "$RTMPS_URL" \
+    # ffmpeg -i "$RTMPS_URL" \
+    # -c:v libx264 -preset ultrafast -tune zerolatency -threads 4 \
+    # -b:v 1000k -maxrate 1000k -bufsize 2000k \
+    # -r 25 -g 50 -keyint_min 25 -sc_threshold 0 \
+    # -c:a aac -b:a 128k -f hls \
+    # -hls_time 10 -hls_list_size 15 -hls_flags delete_segments \
+    # -hls_segment_filename "$HLS_PATH/segment_%03d.ts" \
+    # "$HLS_PATH/index.m3u8" &
+
+    # 🎞️ Lancer la conversion RTMPS → RTSP
+    ffmpeg -re -i "$RTMPS_URL" \
         -c:v libx264 -preset ultrafast -tune zerolatency -threads 4 \
-        -b:v 1000k -maxrate 1000k -bufsize 2000k \
-        -r 25 -g 50 -keyint_min 25 -sc_threshold 0 \
-        -c:a aac -b:a 128k -f hls \
-        -hls_time 10 -hls_list_size 15 -hls_flags delete_segments \
-        -hls_segment_filename "$HLS_PATH/segment_%03d.ts" \
-        "$HLS_PATH/index.m3u8" &
+        -c:a aac -b:a 128k -f rtsp rtsp://0.0.0.0:8554/live.stream &
 
     > /tmp/rtmps_url  # Mettre à vide le fichier pour attendre un nouveau flux
 
