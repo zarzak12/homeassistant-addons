@@ -153,8 +153,8 @@ while true; do
     # 🎞️ Lancer la conversion RTMPS → RTSP
     ffmpeg -v verbose -re -i "$RTMPS_URL" \
         -c:v libx264 -preset ultrafast -tune zerolatency \
-        -c:a aac -b:a 128k \
-        -f rtsp -rtsp_transport tcp rtsp://127.0.0.1:8554/live.stream &
+        -c:a aac -b:a 128k -f rtsp -rtsp_transport tcp rtsp://127.0.0.1:8554/live.stream \
+        -rtsp_flags listen -rtsp_transport tcp &
 
     > /tmp/rtmps_url  # Mettre à vide le fichier pour attendre un nouveau flux
 
