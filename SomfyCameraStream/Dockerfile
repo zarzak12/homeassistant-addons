@@ -5,6 +5,10 @@ FROM ${BUILD_FROM}
 # Copy root filesystem
 COPY rootfs /
 
+# Télécharger et installer MediaMTX
+RUN wget -O /usr/bin/mediamtx https://github.com/bluenviron/mediamtx/releases/latest/download/mediamtx_linux_amd64 \
+    && chmod +x /usr/bin/mediamtx
+
 # Setup base
 RUN apk add --no-cache \
     coreutils=9.5-r2 \
@@ -40,6 +44,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copier la configuration Nginx et Supervisord
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY supervisord.conf /etc/supervisord.conf
+COPY mediamtx.conf /etc/mediamtx/mediamtx.yml
 
 # Exposer le port utilisé par Nginx pour l'Ingress
 EXPOSE 80
