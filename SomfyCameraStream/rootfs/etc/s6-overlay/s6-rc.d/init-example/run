@@ -135,9 +135,9 @@ while true; do
     rm -rf "$HLS_PATH"
     mkdir -p "$HLS_PATH" && chmod -R 777 "$HLS_PATH"
 
-    # Vérifier si le port 7081 est libre
-    if netstat -tulnp | grep ":9080"; then
-        echo "Attention : Le port 9080 est déjà utilisé, vérifiez qu'il est bien libre."
+    # Vérifier si le port 8554 est libre
+    if netstat -tulnp | grep ":8554"; then
+        echo "Attention : Le port 8554 est déjà utilisé, vérifiez qu'il est bien libre."
     fi
 
     # 🎞️ Lancer la conversion RTMPS → HLS
@@ -151,7 +151,7 @@ while true; do
     # "$HLS_PATH/index.m3u8" &
 
     # 🎞️ Lancer la conversion RTMPS → RTSP
-    ffmpeg -v -re -i "$RTMPS_URL" \
+    ffmpeg -v verbose -re -i "$RTMPS_URL" \
         -c:v libx264 \
         -c:a aac \
         -f rtsp rtsp://localhost:8554/live.stream &
