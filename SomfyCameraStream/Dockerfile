@@ -6,7 +6,7 @@ FROM ${BUILD_FROM}
 COPY rootfs /
 
 # Télécharger et installer MediaMTX
-RUN wget -O /usr/bin/mediamtx https://github.com/bluenviron/mediamtx/releases/latest/download/mediamtx_linux_amd64 \
+RUN wget -O /usr/bin/mediamtx https://github.com/bluenviron/mediamtx/releases/download/v1.11.3/mediamtx_v1.11.3_linux_amd64.tar.gz \
     && chmod +x /usr/bin/mediamtx
 
 # Setup base
