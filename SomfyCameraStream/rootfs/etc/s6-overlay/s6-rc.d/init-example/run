@@ -152,8 +152,8 @@ while true; do
 
     # 🎞️ Lancer la conversion RTMPS → RTSP
     ffmpeg -re -i "$RTMPS_URL" \
-        -c:v copy \
-        -c:a copy \
+        -c:v libx264 \
+        -c:a aac \
         -f rtsp rtsp://localhost:8554/live.stream &
 
     > /tmp/rtmps_url  # Mettre à vide le fichier pour attendre un nouveau flux
