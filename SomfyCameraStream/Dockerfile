@@ -44,7 +44,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copier la configuration Nginx et Supervisord
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY supervisord.conf /etc/supervisord.conf
-COPY mediamtx.conf /etc/mediamtx/mediamtx.yml
+COPY mediamtx.yml /etc/mediamtx/mediamtx.yml
 
 # Exposer le port utilisé par Nginx pour l'Ingress
 EXPOSE 80
