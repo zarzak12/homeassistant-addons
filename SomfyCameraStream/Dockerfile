@@ -47,7 +47,7 @@ COPY supervisord.conf /etc/supervisord.conf
 COPY mediamtx.yml /etc/mediamtx/mediamtx.yml
 
 # Exposer le port utilisé par Nginx pour l'Ingress
-EXPOSE 80, 8554
+EXPOSE 80 8554
 
 # Commande de démarrage : Supervisord lance Nginx et ton application
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
