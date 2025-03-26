@@ -28,7 +28,7 @@ RUN apk add --no-cache \
     py3-opencv \
     python3 \
     python3-dev \
-    nginx libnginx-mod-rtmp \
+    nginx \
     supervisor \
     yq websocketd websocat
 
