@@ -1,2 +1,7 @@
 rtsp:
   listen: :8554
+
+paths:
+  live.stream:
+    source: rtspsrc
+    sourceProtocol: tcp
